@@ -15,9 +15,9 @@
   omit_hostname = false
 
 [[outputs.influxdb]]
-   urls = ["http://10.0.10.10:8086"] # cambiar influxdb host 
-   database="clarochileims"
-   
+   urls = ["{{  }}"] # cambiar influxdb host 
+   database="{{  }}" # database que almacena tablas, por defecto _telegraf
+
 [[inputs.cpu]]
 
   percpu = true

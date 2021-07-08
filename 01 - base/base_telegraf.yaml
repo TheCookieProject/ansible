@@ -26,6 +26,7 @@
        - telnet
        - unzip
        - zip
+       - net-tools
       state: present 
       update_cache: true
   
@@ -38,13 +39,10 @@
       name: https://dl.influxdata.com/telegraf/releases/telegraf-1.19.0-1.x86_64.rpm
       state: present 
    
-   - name: Copiando configuracion base telegraf 
-     ansible.builtin.copy:
-        src: telegraf.conf
-        dest: /etc/telegraf/telegraf.conf
-        owner: root 
-        group: root 
-        mode: '0664' 
+   - name: Copiando archivo de config telegraf con variables 
+     template:
+       src: telegraf.j2
+       dest: /tmp/telegraf.conf
 
    - name: Iniciar servicio telegraf enviara metricas a influxDB
      ansible.builtin.service:
@@ -52,12 +50,13 @@
        state: started
        enabled: yes
 
-   - name: Desactivando SELINUX
-     lineinfile:
+   - name: Ensure SELinux is set to enforcing mode
+     ansible.builtin.lineinfile:
        path: /etc/selinux/config
        regexp: '^SELINUX='
        line: SELINUX=disabled
-       register: task_result
 
+   - name: Reiniciar el host al terminar de configurar 
+     reboot:
 
 # configurar influxdb, primero definir un hostDB para almacenar metricas 
