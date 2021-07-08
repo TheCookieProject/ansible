@@ -1,0 +1,63 @@
+---
+
+- name: Configuracion base para equipos Centos 7.X 
+  hosts: servers
+  remote_user: root
+
+  tasks:
+   - name: Epel-Release - paquetes free 
+     yum: 
+      name: epel-release
+      state: present 
+   
+   - name: Paquetes base 
+     yum: 
+      name:
+       - htop
+       - nmap
+       - git
+       - screen
+       - strace 
+       - mtr 
+       - wget 
+       - iftop
+       - iotop
+       - sysstat
+       - telnet
+       - unzip
+       - zip
+      state: present 
+      update_cache: true
+  
+   - name: Configurando zona horaria America/Santiago
+     timezone:
+       name: America/Santiago
+    
+   - name: Instalar telegraf
+     yum:
+      name: https://dl.influxdata.com/telegraf/releases/telegraf-1.19.0-1.x86_64.rpm
+      state: present 
+   
+   - name: Copiando configuracion base telegraf 
+     ansible.builtin.copy:
+        src: telegraf.conf
+        dest: /etc/telegraf/telegraf.conf
+        owner: root 
+        group: root 
+        mode: '0664' 
+
+   - name: Iniciar servicio telegraf enviara metricas a influxDB
+     ansible.builtin.service:
+       name: telegraf 
+       state: started
+       enabled: yes
+
+   - name: Desactivando SELINUX
+     lineinfile:
+       path: /etc/selinux/config
+       regexp: '^SELINUX='
+       line: SELINUX=disabled
+       register: task_result
+
+
+# configurar influxdb, primero definir un hostDB para almacenar metricas 
