@@ -1,62 +1,70 @@
 ---
-
-- name: Configuracion base para equipos Centos 7.X 
+- name: Configuracion base para equipos Centos 7.X
   hosts: servers
   remote_user: root
 
   tasks:
-   - name: Epel-Release - paquetes free 
-     yum: 
+   - name: Epel-Release - paquetes free
+     yum:
       name: epel-release
-      state: present 
+      state: present
    
-   - name: Paquetes base 
-     yum: 
+   - name: Paquetes base
+     yum:
       name:
-       - htop
-       - nmap
+       - bash-completion
        - git
-       - screen
-       - strace 
-       - mtr 
-       - wget 
+       - htop
        - iftop
        - iotop
+       - mtr
+       - net-tools
+       - nmap
+       - screen
+       - strace
        - sysstat
        - telnet
        - unzip
+       - vim-enhanced
+       - wget 
+       - yum-utils
        - zip
-       - net-tools
-      state: present 
+      state: present
       update_cache: true
   
    - name: Configurando zona horaria America/Santiago
      timezone:
        name: America/Santiago
-    
-   - name: Instalar telegraf
+
+   - name: Eliminar servicio firewalld
      yum:
-      name: https://dl.influxdata.com/telegraf/releases/telegraf-1.19.0-1.x86_64.rpm
-      state: present 
+       name: firewalld
+       state: absent
+    
+   - name: Instalar Telegraf
+     yum:
+       name: https://dl.influxdata.com/telegraf/releases/telegraf-1.19.0-1.x86_64.rpm
+       state: present
    
-   - name: Copiando archivo de config telegraf con variables 
+   - name: Copiando archivo de config Telegraf con variables
      template:
        src: telegraf.j2
        dest: /tmp/telegraf.conf
 
-   - name: Iniciar servicio telegraf enviara metricas a influxDB
+   - name: Iniciar servicio Telegraf enviara metricas a InfluxDB
      ansible.builtin.service:
-       name: telegraf 
+       name: telegraf
        state: started
        enabled: yes
 
-   - name: Ensure SELinux is set to enforcing mode
+   - name: Desactivar SELinux
      ansible.builtin.lineinfile:
        path: /etc/selinux/config
        regexp: '^SELINUX='
        line: SELINUX=disabled
 
-   - name: Reiniciar el host al terminar de configurar 
+   - name: Reiniciar el host al terminar de configurar
      reboot:
 
-# configurar influxdb, primero definir un hostDB para almacenar metricas 
+# configurar influxdb, primero definir un hostDB para almacenar metricas
+...
