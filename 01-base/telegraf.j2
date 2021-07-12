@@ -15,8 +15,8 @@
   omit_hostname = false
 
 [[outputs.influxdb]]
-   urls = ["{{  }}"] # cambiar influxdb host 
-   database="{{  }}" # database que almacena tablas, por defecto _telegraf
+   urls = ["{{ db_url }}"] # cambiar influxdb host 
+   database="{{ db_name }}" # database que almacena tablas, por defecto _telegraf
 
 [[inputs.cpu]]
 
