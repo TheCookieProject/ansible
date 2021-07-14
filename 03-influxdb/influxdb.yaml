@@ -1,0 +1,32 @@
+---
+
+- name: Instalacion de influxDB Centos 7, 8
+  hosts: #servers 
+  remote_user: root
+
+  tasks:
+    - name: Descargar ultima version InfluxDB 2021-07-6 # ultima version 2.0 
+      # https://portal.influxdata.com/downloads/ 
+      yum:
+        name: https://dl.influxdata.com/influxdb/releases/influxdb-1.8.6.x86_64.rpm
+        state: present
+
+    - name: Creando directorios en kvol
+
+    - name: Copiando configuracion base InfluxDB 
+        ansible.builtin.copy:
+          src: influxdb.conf
+          dest: /etc/influxdb/influxdb.conf
+          owner: root 
+          group: root 
+          mode: '0664' 
+    
+    - name: Iniciando servicio influxDB 
+      ansible.builtin.service:
+        name: influxdb
+        state: started
+        enabled: yes
+
+    - name: Cambia hostname 
+      ansible.builtin.hostname:
+        name: Srv-DBX 
