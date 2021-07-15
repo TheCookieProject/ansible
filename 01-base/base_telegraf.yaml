@@ -1,7 +1,7 @@
 ---
 - name: Configuracion base para equipos Centos 7.X
-  hosts: digitaloceon
-  remote_user: abravo
+  hosts: terraform
+  remote_user: root
 
   tasks:
    - name: Epel-Release - paquetes free
