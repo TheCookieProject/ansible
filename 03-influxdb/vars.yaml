@@ -1,0 +1,5 @@
+path_idb:
+
+  - /mnt/kvol/meta # j2 variable 1 y directios... 
+  - /mnt/kvol/data # j2 variable 2
+  - /mnt/kvol/wal  # j2 variable 3
