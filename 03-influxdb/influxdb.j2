@@ -1,11 +1,11 @@
 [meta]
   #dir = "/var/lib/influxdb/meta"
   # /mnt/kvol -> volume en DO 
-  dir = "{{  }}"
+  dir = "{{ path_meta }}"
 
 [data]
   #dir = "/var/lib/influxdb/data"
-  dir = "{{  }}"
+  dir = "{{ path_data }}"
   engine = "tsm1"
   #wal-dir = "/var/lib/influxdb/wal"
-  wal-dir = "{{  }}"
+  wal-dir = "{{ path_wal }}"

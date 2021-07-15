@@ -1,8 +1,12 @@
 ---
 
 - name: Instalacion de influxDB Centos 7, 8
-  hosts: #servers 
+  hosts: terraform 
   remote_user: root
+  vars: 
+    - path_meta: "/mnt/kvol/meta"
+    - path_data: "mnt/kvol/data" 
+    - path_wal:  "mnt/kvol/wal"
 
   tasks:
     - name: Descargar ultima version InfluxDB 2021-07-6 # ultima version 2.0 
@@ -10,17 +14,37 @@
       yum:
         name: https://dl.influxdata.com/influxdb/releases/influxdb-1.8.6.x86_64.rpm
         state: present
-
-    - name: Creando directorios en kvol
-
+  
     - name: Copiando configuracion base InfluxDB 
-        ansible.builtin.copy:
-          src: influxdb.conf
-          dest: /etc/influxdb/influxdb.conf
-          owner: root 
-          group: root 
-          mode: '0664' 
-    
+      template:
+        src: influxdb.j2
+        dest: /etc/influxdb/influxdb.conf 
+
+    - name: Creando direcotorios Influxdb meta
+      ansible.builtin.file:
+        path: "{{ path_meta }}"
+        state: directory
+        owner: influxdb
+        group: influxdb
+        mode: '0755'    
+
+    - name: Creando directorio Influxdb data
+      ansible.builtin.file:
+        path: "{{ path_data }}"
+        state: directory
+        owner: influxdb
+        group: influxdb
+        mode: '0755' 
+
+    - name: Creando directorio influxdb wal
+      ansible.builtin.file:
+        path: "{{ path_wal }}"
+        state: directory
+        owner: influxdb
+        group: influxdb
+        mode: '0755' 
+
+
     - name: Iniciando servicio influxDB 
       ansible.builtin.service:
         name: influxdb

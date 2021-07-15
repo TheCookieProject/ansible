@@ -3,8 +3,8 @@
 # Resumen de guia oficial https://docs.docker.com/engine/install/centos/
 
 - name: Instalar Docker y Docker Compose
-  hosts: servers
-  remote_user: username
+  hosts: terraform
+  remote_user: root
 
   tasks:
 
